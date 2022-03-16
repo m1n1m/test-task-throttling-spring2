@@ -1,0 +1,12 @@
+{
+  "properties": [
+    {
+      "name": "throttle.limit",
+      "type": "java.lang.Integer"
+    },
+    {
+      "name": "throttle.duration",
+      "type": "java.lang.String"
+    }
+  ]
+}
