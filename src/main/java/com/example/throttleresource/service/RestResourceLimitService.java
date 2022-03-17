@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.PostConstruct;
@@ -24,10 +23,9 @@ public class RestResourceLimitService {
 
     @PostConstruct
     public void init() {
-        final Duration duration = throttleConfig.getDuration();
         requestCountsPerIpAddress = Caffeine
                 .newBuilder()
-                .expireAfterWrite(duration.toMillis(), TimeUnit.MILLISECONDS)
+                .expireAfterWrite(throttleConfig.getDuration().toMillis(), TimeUnit.MILLISECONDS)
                 .build(key -> new AtomicInteger());
     }
 
@@ -37,7 +35,7 @@ public class RestResourceLimitService {
         final int requestsCount = requestsCountAtomic.incrementAndGet();
         final boolean tooMany = requestsCount > throttleConfig.getLimit();
         if (log.isDebugEnabled()) {
-            log.debug("Client IP {}\t requests count {}, too many {}", clientIp, requestsCount, tooMany);
+            log.debug("Client IP {}\t requests count {}\t {}", clientIp, requestsCount, tooMany);
         }
         return tooMany;
     }
