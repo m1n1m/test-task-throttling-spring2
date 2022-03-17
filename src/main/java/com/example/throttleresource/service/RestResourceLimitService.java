@@ -31,8 +31,7 @@ public class RestResourceLimitService {
 
     public boolean isTooManyRequests(final HttpServletRequest request) {
         final String clientIp = request.getRemoteAddr();
-        final AtomicInteger requestsCountAtomic = requestCountsPerIpAddress.get(clientIp);
-        final int requestsCount = requestsCountAtomic.incrementAndGet();
+        final int requestsCount = requestCountsPerIpAddress.get(clientIp).incrementAndGet();
         final boolean tooMany = requestsCount > throttleConfig.getLimit();
         if (log.isDebugEnabled()) {
             log.debug("Client IP {}\t requests count {}\t {}", clientIp, requestsCount, tooMany);
